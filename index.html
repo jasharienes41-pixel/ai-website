@@ -11,43 +11,42 @@
        CSS CUSTOM PROPERTIES — Light & Dark themes
        ============================================================ */
     :root {
-      /* ---- Light theme (default) ---- */
-      --bg-primary:        #f8fafc;
-      --bg-secondary:      #ffffff;
-      --bg-sidebar:        #0f172a;
-      --bg-card:           #ffffff;
-      --bg-input:          #f1f5f9;
-      --bg-hover:          #e2e8f0;
-      --bg-coach-card:     #ffffff;
-      --bg-review:         #f8fafc;
-      --bg-badge:          #e0f2fe;
+      --bg-primary:        #071A2F;
+      --bg-secondary:      #0a1f38;
+      --bg-sidebar:        #040f1d;
+      --bg-card:           #102A43;
+      --bg-input:          #0e2338;
+      --bg-hover:          #163554;
+      --bg-coach-card:     #102A43;
+      --bg-review:         #0a1f38;
+      --bg-badge:          #0c2845;
 
-      --text-primary:      #0f172a;
-      --text-secondary:    #475569;
-      --text-muted:        #94a3b8;
+      --text-primary:      #F8FAFC;
+      --text-secondary:    #cbd5e1;
+      --text-muted:        #64748b;
       --text-sidebar:      #e2e8f0;
-      --text-sidebar-muted:#94a3b8;
-      --text-on-primary:   #ffffff;
+      --text-sidebar-muted:#64748b;
+      --text-on-primary:   #071A2F;
 
-      --border:            #e2e8f0;
-      --border-light:      #f1f5f9;
+      --border:            #1e3a5f;
+      --border-light:      #122b45;
 
-      --accent:            #0ea5e9;
-      --accent-hover:      #0284c7;
-      --accent-light:      #e0f2fe;
-      --accent-glow:       0 0 0 3px rgba(14,165,233,0.3);
+      --accent:            #00B4D8;
+      --accent-hover:      #48CAE4;
+      --accent-light:      #0a2a3f;
+      --accent-glow:       0 0 0 3px rgba(0,180,216,0.3);
 
-      --gradient-hero:     linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #8b5cf6 100%);
-      --gradient-card:     linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-hero:     linear-gradient(135deg, #00B4D8 0%, #48CAE4 50%, #90E0EF 100%);
+      --gradient-card:     linear-gradient(135deg, #00B4D8 0%, #48CAE4 100%);
 
       --success:           #10b981;
       --warning:           #f59e0b;
       --error:             #ef4444;
 
-      --shadow-sm:         0 1px 2px rgba(0,0,0,0.05);
-      --shadow-md:         0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
-      --shadow-lg:         0 10px 25px -5px rgba(0,0,0,0.08), 0 4px 10px -6px rgba(0,0,0,0.04);
-      --shadow-xl:         0 20px 50px -12px rgba(0,0,0,0.15);
+      --shadow-sm:         0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md:         0 4px 6px rgba(0,0,0,0.4);
+      --shadow-lg:         0 10px 25px rgba(0,0,0,0.5);
+      --shadow-xl:         0 20px 50px rgba(0,0,0,0.6);
 
       --radius-sm:         6px;
       --radius-md:         10px;
@@ -62,44 +61,9 @@
       --transition-slow:   0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* ---- Dark theme ---- */
-    [data-theme="dark"] {
-      --bg-primary:        #0f172a;
-      --bg-secondary:      #1e293b;
-      --bg-sidebar:        #020617;
-      --bg-card:           #1e293b;
-      --bg-input:          #334155;
-      --bg-hover:          #334155;
-      --bg-coach-card:     #1e293b;
-      --bg-review:         #0f172a;
-      --bg-badge:          #1e3a5f;
-
-      --text-primary:      #f1f5f9;
-      --text-secondary:    #cbd5e1;
-      --text-muted:        #64748b;
-      --text-sidebar:      #e2e8f0;
-      --text-sidebar-muted:#94a3b8;
-      --text-on-primary:   #ffffff;
-
-      --border:            #334155;
-      --border-light:      #1e293b;
-
-      --shadow-sm:         0 1px 2px rgba(0,0,0,0.3);
-      --shadow-md:         0 4px 6px -1px rgba(0,0,0,0.4);
-      --shadow-lg:         0 10px 25px -5px rgba(0,0,0,0.5);
-      --shadow-xl:         0 20px 50px -12px rgba(0,0,0,0.6);
-
-      --accent-light:      #1e3a5f;
-    }
-
-    /* High-contrast mode (respects OS setting) */
+    /* High-contrast mode */
     @media (prefers-contrast: high) {
       :root {
-        --text-primary:    #000000;
-        --text-secondary:  #1a1a1a;
-        --border:          #000000;
-      }
-      [data-theme="dark"] {
         --text-primary:    #ffffff;
         --text-secondary:  #e0e0e0;
         --border:          #ffffff;
@@ -855,10 +819,9 @@
     .booking-steps .step.completed {
       border-color: var(--success);
       color: var(--success);
-      background: #ecfdf5;
+      background: #064e3b;
     }
-    [data-theme="dark"] .booking-steps .step.completed { background: #064e3b; }
-    [data-theme="dark"] .booking-steps .step.active { background: #1e3a5f; }
+    .booking-steps .step.active { background: var(--accent-light); }
     .step-num {
       width: 28px; height: 28px;
       border-radius: 50%;
@@ -989,10 +952,8 @@
     }
 
     /* === AI CHAT & GLASSMORPHISM === */
-    .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.3); }
-    [data-theme="dark"] .glass { background: rgba(30,41,59,0.75); border-color: rgba(255,255,255,0.08); }
+    .glass { background: rgba(16,42,67,0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(0,180,216,0.12); }
     .ai-chat { border-radius: var(--radius-lg); margin-bottom: 24px; overflow: hidden; }
-    .chat-messages { max-height: 280px; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
     .chat-msg { display: flex; gap: 10px; align-items: flex-start; animation: msgIn 0.3s ease; }
     @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     .chat-msg.user { flex-direction: row-reverse; }
@@ -1214,9 +1175,6 @@
       </button>
       <h1 id="pageTitle" data-i18n="pageHome">Home</h1>
       <div class="topbar-actions">
-        <button class="theme-toggle" id="themeToggle" aria-label="Switch to dark mode">
-          <span aria-hidden="true" id="themeIcon">🌙</span>
-        </button>
       </div>
     </header>
 
@@ -1232,7 +1190,7 @@
             <h2 id="home-heading" data-i18n="heroTitle">Your Dream Trip,<br>Planned by AI in Seconds</h2>
             <p data-i18n="heroSub">Tell us your budget, interests, and travel style — our AI builds a complete, personalized day‑by‑day itinerary. No more hours of research.</p>
             <p id="welcomeMsg" style="font-size:14px;opacity:0.9;margin-bottom:12px;min-height:20px"></p>
-            <a href="#plan" class="btn btn-lg btn-secondary" style="background:#fff;color:var(--accent)" data-nav="plan" data-i18n="heroCTA">Start Planning Free</a>
+            <a href="#plan" class="btn btn-lg btn-primary" data-nav="plan" data-i18n="heroCTA">Start Planning Free</a>
           </div>
         </div>
 
@@ -2073,7 +2031,6 @@
 
     // ── State ─────────────────────────────────────────────────
     let lang = localStorage.getItem('aiplanner-lang') || 'en';
-    let theme = localStorage.getItem('aiplanner-theme') || 'light';
     let currentPage = 'home';
     let sidebarOpen = false;
 
@@ -2099,9 +2056,6 @@
     const sidebar       = $('#sidebar');
     const sidebarOverlay= $('#sidebarOverlay');
     const menuBtn       = $('#menuBtn');
-    const mainWrapper   = $('#mainWrapper');
-    const themeToggle   = $('#themeToggle');
-    const themeIcon     = $('#themeIcon');
     const langToggle    = $('#langToggle');
     const pageTitle     = $('#pageTitle');
     const liveRegion    = $('#live-region');
@@ -2111,14 +2065,6 @@
     const itineraryResult = $('#itineraryResult');
     const budgetSlider  = $('#budget');
     const budgetValue   = $('#budgetValue');
-
-    // ── Apply theme ───────────────────────────────────────────
-    function applyTheme() {
-      document.documentElement.setAttribute('data-theme', theme);
-      themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
-      const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
-      themeToggle.setAttribute('aria-label', label);
-    }
 
     // ── Apply language ────────────────────────────────────────
     function applyLanguage() {
@@ -2511,7 +2457,6 @@
     menuBtn.addEventListener('click',()=>{if(sidebarOpen)closeSidebar();else openSidebar();});
     sidebarOverlay.addEventListener('click',closeSidebar);
     document.addEventListener('keydown',(e)=>{if(e.key==='Escape'){if(document.getElementById('simulatorOverlay').style.display==='flex'){window.closeSimulator();return}if(sidebarOpen){closeSidebar();menuBtn.focus()}}});
-    themeToggle.addEventListener('click',()=>{theme=theme==='light'?'dark':'light';applyTheme();localStorage.setItem('aiplanner-theme',theme);toast(theme==='dark'?t[lang].toastDarkOn:t[lang].toastDarkOff);});
     langToggle.addEventListener('click',()=>{lang=lang==='en'?'es':'en';applyLanguage();localStorage.setItem('aiplanner-lang',lang);toast(lang==='en'?t[lang].toastLangEN:t[lang].toastLangES);if(currentPage==='coaches'){renderCoaches(document.querySelector('.filter-btn.active')?.dataset?.filter||'all')}if(currentPage==='plan'&&currentItinerary)renderItinerary(currentItinerary);});
     document.addEventListener('click',(e)=>{if(e.target.classList.contains('filter-btn')){$$('.filter-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false')});e.target.classList.add('active');e.target.setAttribute('aria-pressed','true');renderCoaches(e.target.dataset.filter);}});
     budgetSlider.addEventListener('input',()=>{budgetValue.textContent='$'+parseInt(budgetSlider.value).toLocaleString();});
@@ -2519,7 +2464,6 @@
     document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter')window.sendChat();});
 
     // ── Initial setup ─────────────────────────────────────────
-    applyTheme();
     applyLanguage();
     renderCoaches('all');
     renderInspoFeed();
