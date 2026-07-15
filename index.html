@@ -1084,6 +1084,60 @@
       .chat-bubble { max-width:90%; }
       .simulator-modal { padding:20px; }
     }
+
+    /* === SKELETON LOADER === */
+    .skeleton-loader { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px 24px; display:flex; flex-direction:column; gap:10px; }
+    .sk-stage { display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-muted); opacity:0.4; transition:opacity 0.4s; }
+    .sk-stage.active { opacity:1; color:var(--text-primary); }
+    .sk-stage.done { opacity:1; color:var(--success); }
+    .sk-icon { font-size:18px; width:28px; text-align:center; }
+    .sk-bar { flex:1; height:4px; background:var(--bg-hover); border-radius:2px; overflow:hidden; }
+    .sk-fill { height:100%; width:0; background:var(--accent); border-radius:2px; transition:width 0.5s ease; }
+    .sk-stage.active .sk-fill { animation:skPulse 0.6s forwards; }
+    .sk-stage.done .sk-fill { width:100%; background:var(--success); }
+    @keyframes skPulse { 0%{width:0} 100%{width:100%} }
+
+    /* === VERSION TABS === */
+    .version-tabs { display:flex; gap:4px; background:var(--bg-hover); border-radius:var(--radius-md); padding:4px; }
+    .version-tab { flex:1; padding:10px 14px; border:none; border-radius:var(--radius-sm); background:transparent; color:var(--text-secondary); font-weight:600; font-size:13px; cursor:pointer; transition:all var(--transition); font-family:inherit; }
+    .version-tab.active { background:var(--bg-card); color:var(--accent); box-shadow:var(--shadow-sm); }
+    .version-tab:focus-visible { outline:none; box-shadow:var(--accent-glow); }
+    .modifier-chips { display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+
+    /* === INSPIRATION FEED === */
+    .inspiration-feed { margin-bottom:40px; }
+    .inspiration-feed h2 { margin-bottom:16px; }
+    .inspo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+    .inspo-card { border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border); cursor:pointer; transition:all var(--transition); background:var(--bg-card); }
+    .inspo-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+    .inspo-card-img { height:100px; display:flex; align-items:center; justify-content:center; font-size:40px; }
+    .inspo-card-body { padding:10px 14px; }
+    .inspo-card-body h4 { font-size:14px; margin-bottom:2px; }
+    .inspo-card-body p { font-size:12px; color:var(--text-muted); }
+    .inspo-badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:700; margin-top:4px; }
+    .inspo-badge.trending { background:#fef3c7; color:#92400e; }
+    .inspo-badge.cheap { background:#d1fae5; color:#065f46; }
+    .inspo-badge.weekend { background:#e0e7ff; color:#3730a3; }
+    .inspo-badge.hidden { background:#fce7f3; color:#9d174d; }
+
+    /* === PERSONALITY QUIZ === */
+    .quiz-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:5000; display:flex; align-items:center; justify-content:center; padding:20px; }
+    .quiz-modal { max-width:500px; width:100%; border-radius:var(--radius-xl); padding:32px; animation:simIn 0.3s ease; background:var(--bg-card); }
+    .quiz-question { font-size:18px; font-weight:700; margin-bottom:16px; text-align:center; }
+    .quiz-options { display:flex; flex-direction:column; gap:8px; }
+    .quiz-option { padding:14px 18px; border:2px solid var(--border); border-radius:var(--radius-md); background:var(--bg-card); cursor:pointer; font-size:15px; transition:all var(--transition); text-align:left; font-family:inherit; }
+    .quiz-option:hover { border-color:var(--accent); background:var(--accent-light); }
+    .quiz-option:focus-visible { outline:none; box-shadow:var(--accent-glow); }
+    .quiz-result { text-align:center; }
+    .quiz-result .quiz-type { font-size:48px; display:block; margin-bottom:8px; }
+    .quiz-result h3 { font-size:22px; margin-bottom:8px; }
+    .quiz-result p { color:var(--text-secondary); margin-bottom:16px; line-height:1.7; }
+
+    /* === PASSPORT STAMP === */
+    .passport-stamp { display:inline-block; padding:6px 14px; border:2px dashed var(--accent); border-radius:var(--radius-sm); color:var(--accent); font-weight:700; font-size:12px; transform:rotate(-6deg); opacity:0.85; text-transform:uppercase; letter-spacing:1px; }
+
+    /* === TRIP SCORE 8-METRIC === */
+    .trip-score-bar.score-8 { grid-template-columns:repeat(4,1fr); }
   </style>
 </head>
 <body>
@@ -1177,6 +1231,7 @@
           <div class="hero-content">
             <h2 id="home-heading" data-i18n="heroTitle">Your Dream Trip,<br>Planned by AI in Seconds</h2>
             <p data-i18n="heroSub">Tell us your budget, interests, and travel style — our AI builds a complete, personalized day‑by‑day itinerary. No more hours of research.</p>
+            <p id="welcomeMsg" style="font-size:14px;opacity:0.9;margin-bottom:12px;min-height:20px"></p>
             <a href="#plan" class="btn btn-lg btn-secondary" style="background:#fff;color:var(--accent)" data-nav="plan" data-i18n="heroCTA">Start Planning Free</a>
           </div>
         </div>
@@ -1224,6 +1279,12 @@
             </div>
           </div>
         </div>
+
+        <!-- Inspiration Feed -->
+        <div class="inspiration-feed">
+          <h2>📸 Discover Destinations</h2>
+          <div class="inspo-grid" id="inspoGrid"></div>
+        </div>
       </section>
 
       <!-- ==========================================================
@@ -1251,6 +1312,33 @@
             <input type="text" id="chatInput" class="chat-input" placeholder="e.g. Plan a 5-day trip to Japan for under $2,000..." aria-label="Chat with AI planner">
             <button class="btn btn-primary" onclick="window.sendChat()" aria-label="Send message">➤</button>
             <button class="btn btn-sm btn-secondary" onclick="window.regenerateItinerary()" id="regenerateBtn" style="display:none" title="Regenerate" aria-label="Regenerate itinerary">🔄</button>
+          </div>
+        </div>
+
+        <!-- Skeleton loader -->
+        <div class="skeleton-loader" id="skeletonLoader" style="display:none">
+          <div class="sk-stage" id="skStage1"><span class="sk-icon">✈️</span><span>Finding flights...</span><div class="sk-bar"><div class="sk-fill"></div></div></div>
+          <div class="sk-stage" id="skStage2"><span class="sk-icon">🏨</span><span>Choosing hotels...</span><div class="sk-bar"><div class="sk-fill"></div></div></div>
+          <div class="sk-stage" id="skStage3"><span class="sk-icon">🗺️</span><span>Building itinerary...</span><div class="sk-bar"><div class="sk-fill"></div></div></div>
+          <div class="sk-stage" id="skStage4"><span class="sk-icon">🍽️</span><span>Finding restaurants...</span><div class="sk-bar"><div class="sk-fill"></div></div></div>
+          <div class="sk-stage" id="skStage5"><span class="sk-icon">🎉</span><span>Finalizing your trip...</span><div class="sk-bar"><div class="sk-fill"></div></div></div>
+        </div>
+
+        <!-- Version tabs + modifiers (hidden until generation) -->
+        <div id="versionBar" style="display:none;margin-bottom:16px">
+          <div class="version-tabs" role="tablist" aria-label="Itinerary versions">
+            <button class="version-tab active" role="tab" aria-selected="true" onclick="window.switchVersion('balanced')" data-v="balanced">⚖️ Balanced</button>
+            <button class="version-tab" role="tab" aria-selected="false" onclick="window.switchVersion('fast')" data-v="fast">⚡ Fast-paced</button>
+            <button class="version-tab" role="tab" aria-selected="false" onclick="window.switchVersion('relaxed')" data-v="relaxed">😌 Relaxed</button>
+          </div>
+          <div class="modifier-chips" style="margin-top:10px">
+            <span style="font-size:12px;color:var(--text-muted);margin-right:6px">Modify:</span>
+            <button class="btn btn-sm btn-secondary" onclick="window.applyModifier('kidFriendly')">👶 Kid-friendly</button>
+            <button class="btn btn-sm btn-secondary" onclick="window.applyModifier('lessWalking')">🚶 Less walking</button>
+            <button class="btn btn-sm btn-secondary" onclick="window.applyModifier('moreLocal')">🏘️ More local</button>
+            <button class="btn btn-sm btn-secondary" onclick="window.applyModifier('avoidTourist')">🗺️ No tourist traps</button>
+            <button class="btn btn-sm btn-secondary" onclick="window.applyModifier('rainyBackup')">🌧️ Rainy backup</button>
+            <button class="btn btn-sm btn-secondary" onclick="window.applyModifier('addDay')">➕ Add day</button>
           </div>
         </div>
 
@@ -1321,11 +1409,15 @@
             <div id="itineraryContent" style="display:none"></div>
           </div>
         </div>
-        <div class="trip-score-bar" id="tripScoreBar" style="display:none">
-          <div class="score-item"><span class="score-emoji">⚡</span><span class="score-label">Pace</span><span class="score-val" id="scorePace">8/10</span></div>
+        <div class="trip-score-bar score-8" id="tripScoreBar" style="display:none">
           <div class="score-item"><span class="score-emoji">💰</span><span class="score-label">Budget</span><span class="score-val" id="scoreBudget">7/10</span></div>
-          <div class="score-item"><span class="score-emoji">🎯</span><span class="score-label">Variety</span><span class="score-val" id="scoreVariety">9/10</span></div>
+          <div class="score-item"><span class="score-emoji">🏕️</span><span class="score-label">Adventure</span><span class="score-val" id="scoreAdventure">8/10</span></div>
+          <div class="score-item"><span class="score-emoji">😌</span><span class="score-label">Relaxation</span><span class="score-val" id="scoreRelax">6/10</span></div>
+          <div class="score-item"><span class="score-emoji">🍜</span><span class="score-label">Food</span><span class="score-val" id="scoreFood">9/10</span></div>
           <div class="score-item"><span class="score-emoji">🚶</span><span class="score-label">Walking</span><span class="score-val" id="scoreWalking">6/10</span></div>
+          <div class="score-item"><span class="score-emoji">🌄</span><span class="score-label">Scenic</span><span class="score-val" id="scoreScenic">9/10</span></div>
+          <div class="score-item"><span class="score-emoji">👥</span><span class="score-label">Crowd</span><span class="score-val" id="scoreCrowd">5/10</span></div>
+          <div class="score-item"><span class="score-emoji">🛡️</span><span class="score-label">Safety</span><span class="score-val" id="scoreSafety">9/10</span></div>
         </div>
         <div id="tripActions" style="display:none;margin-top:16px;gap:10px;flex-wrap:wrap">
           <button class="btn btn-secondary btn-sm" onclick="window.previewTrip()">🎬 Preview My Trip</button>
@@ -2257,6 +2349,8 @@
       document.getElementById('budgetPanel').style.display='';
       document.getElementById('packingPanel').style.display='';
       renderBudgetBreakdown(result); renderPackingList(result); updateTripScore(result);
+      document.getElementById('versionBar').style.display='';
+      recordTrip(result);
       itineraryResult.scrollIntoView({behavior:'smooth',block:'nearest'});
     }
 
@@ -2275,11 +2369,113 @@
     }
 
     function updateTripScore(r) {
-      const d=r.days.length, pace=d<=3?6:d<=5?8:d<=7?7:5, bud=r.budget<=1000?5:r.budget<=3000?8:r.budget<=7000?7:6, variety=r.interests.length<=1?4:r.interests.length<=2?6:r.interests.length<=3?8:10, walk=r.styleKey==='backpacker'?9:r.styleKey==='luxury'?3:6;
-      document.getElementById('scorePace').textContent=pace+'/10';
+      const d=r.days.length, bud=r.budget<=1000?5:r.budget<=3000?8:r.budget<=7000?7:6, adv=r.interests.includes('Adventure')?9:r.interests.includes('Nature')?8:5, rel=r.styleKey==='luxury'?9:r.styleKey==='backpacker'?4:6, food=r.interests.includes('Food')?9:6, walk=r.styleKey==='backpacker'?9:r.styleKey==='luxury'?3:6, scenic=['Beach','Nature'].some(i=>r.interests.includes(i))?9:7, crowd=r.interests.includes('Nightlife')?3:r.styleKey==='backpacker'?8:5, safe=8+Math.floor(Math.random()*2);
       document.getElementById('scoreBudget').textContent=bud+'/10';
-      document.getElementById('scoreVariety').textContent=variety+'/10';
+      document.getElementById('scoreAdventure').textContent=adv+'/10';
+      document.getElementById('scoreRelax').textContent=rel+'/10';
+      document.getElementById('scoreFood').textContent=food+'/10';
       document.getElementById('scoreWalking').textContent=walk+'/10';
+      document.getElementById('scoreScenic').textContent=scenic+'/10';
+      document.getElementById('scoreCrowd').textContent=crowd+'/10';
+      document.getElementById('scoreSafety').textContent=safe+'/10';
+    }
+
+    // ── Skeleton loader ──────────────────────────────────────
+    function showSkeleton() {
+      document.getElementById('skeletonLoader').style.display='';
+      ['skStage1','skStage2','skStage3','skStage4','skStage5'].forEach((id,i)=>{
+        setTimeout(()=>{
+          const el=document.getElementById(id);
+          if(el){el.classList.add('active');el.querySelector('.sk-fill').style.width='100%';}
+          if(i>0){const prev=document.getElementById('skStage'+(i));if(prev){prev.classList.remove('active');prev.classList.add('done');}}
+        },i*400);
+      });
+    }
+    function hideSkeleton() {
+      document.getElementById('skeletonLoader').style.display='none';
+      document.querySelectorAll('.sk-stage').forEach(s=>{s.classList.remove('active','done');s.querySelector('.sk-fill').style.width='0';});
+    }
+
+    // ── Version switching ────────────────────────────────────
+    window.switchVersion=function(v){
+      if(!currentItinerary)return;
+      document.querySelectorAll('.version-tab').forEach(t=>{t.classList.toggle('active',t.dataset.v===v);t.setAttribute('aria-selected',t.dataset.v===v);});
+      const days=currentItinerary.days.length;
+      const styles={balanced:'balanced',fast:'solo',relaxed:'luxury'};
+      const multipliers={balanced:1,fast:0.7,relaxed:1.4};
+      const budget=Math.floor(currentItinerary.budget*multipliers[v]);
+      const r=generateItinerary(currentItinerary.destination,days,budget,currentItinerary.interests,styles[v]);
+      r.version=v;
+      renderItinerary(r);
+      document.getElementById('versionBar').style.display='';
+      toast('🔄 Switched to '+v+' version!');
+    };
+
+    // ── Modifiers ────────────────────────────────────────────
+    window.applyModifier=function(mod){
+      if(!currentItinerary)return;
+      let ints=[...currentItinerary.interests];
+      if(mod==='kidFriendly'){ints=ints.filter(i=>i!=='Nightlife');if(!ints.includes('Culture'))ints.push('Culture');}
+      else if(mod==='lessWalking'){ints=ints.filter(i=>i!=='Adventure');ints.push('Relaxation');}
+      else if(mod==='moreLocal'){ints.push('Food');ints.push('Culture');}
+      else if(mod==='avoidTourist'){ints=ints.filter(i=>i!=='Shopping');ints.push('Nature');}
+      else if(mod==='rainyBackup'){ints=ints.filter(i=>i!=='Beach'&&i!=='Adventure');ints.push('Culture');ints.push('Food');}
+      else if(mod==='addDay'){const r=generateItinerary(currentItinerary.destination,currentItinerary.days.length+1,Math.floor(currentItinerary.budget*1.15),ints,currentItinerary.styleKey);renderItinerary(r);document.getElementById('versionBar').style.display='';toast('➕ Added one more day!');return;}
+      ints=[...new Set(ints)].slice(0,4);
+      const r=generateItinerary(currentItinerary.destination,currentItinerary.days.length,currentItinerary.budget,ints,currentItinerary.styleKey);
+      renderItinerary(r);
+      document.getElementById('versionBar').style.display='';
+      toast('✨ Applied: '+mod);
+    };
+
+    // ── Inspiration feed ─────────────────────────────────────
+    function renderInspoFeed() {
+      const items=[{emoji:'🏯',name:'Tokyo',desc:'Trending this month',badge:'trending',label:'🔥 Trending'},{emoji:'🏖️',name:'Bali',desc:'Cheapest right now',badge:'cheap',label:'💸 Best Value'},{emoji:'🗼',name:'Paris',desc:'Weekend getaway',badge:'weekend',label:'🗓️ Weekend'},{emoji:'🏔️',name:'Patagonia',desc:'Hidden gem',badge:'hidden',label:'💎 Hidden Gem'},{emoji:'🌋',name:'Reykjavik',desc:'Northern lights season',badge:'trending',label:'🔥 Trending'},{emoji:'🕌',name:'Marrakech',desc:'Exotic escape',badge:'hidden',label:'💎 Hidden Gem'},{emoji:'🏝️',name:'Maldives',desc:'Cheapest flights',badge:'cheap',label:'💸 Best Value'},{emoji:'🌉',name:'Lisbon',desc:'Digital nomad hub',badge:'weekend',label:'🗓️ Weekend'}];
+      const grid=document.getElementById('inspoGrid');
+      if(!grid)return;
+      grid.innerHTML=items.map(i=>`<div class="inspo-card" onclick="window.aiQuickAsk('Plan a trip to ${i.name}')" tabindex="0" role="button" aria-label="${i.name}: ${i.desc}" onkeydown="if(event.key==='Enter'){window.aiQuickAsk('Plan a trip to ${i.name}')}"><div class="inspo-card-img" style="background:linear-gradient(135deg,var(--accent-light),var(--bg-hover))">${i.emoji}</div><div class="inspo-card-body"><h4>${i.name}</h4><p>${i.desc}</p><span class="inspo-badge ${i.badge}">${i.label}</span></div></div>`).join('');
+    }
+
+    // ── AI Personality quiz ──────────────────────────────────
+    window.startPersonalityQuiz=function(){
+      const qs=[{q:'Pick your ideal morning:',o:[{t:'☀️ Sunrise hike',s:{Adventurer:3,Explorer:2}},{t:'🍳 Leisurely brunch',s:{Foodie:3,Luxury:2}},{t:'📸 Exploring a new city',s:{Explorer:3,Adventurer:1}},{t:'💻 Working from a café',s:{Nomad:3,Explorer:1}}]},{q:'What matters most on a trip?',o:[{t:'🍜 Amazing food',s:{Foodie:3}},{t:'🏔️ Epic adventures',s:{Adventurer:3}},{t:'😌 Total relaxation',s:{Luxury:3}},{t:'🌍 Immersing in culture',s:{Explorer:3}}]},{q:'Pick a dinner:',o:[{t:'🍣 Michelin star',s:{Luxury:3,Foodie:2}},{t:'🍢 Street food stall',s:{Adventurer:2,Explorer:2,Foodie:1}},{t:'🍕 Local family restaurant',s:{Explorer:3}},{t:'🥗 Cooking in my Airbnb',s:{Nomad:3}}]}];
+      let qi=0,scores={};
+      function showQ(){
+        if(qi>=qs.length){showResult();return;}
+        const q=qs[qi];
+        document.getElementById('quizContent').innerHTML=`<div class="quiz-question">${q.q}</div><div class="quiz-options">${q.o.map((o,i)=>`<button class="quiz-option" onclick="void(0)" data-idx="${i}">${o.t}</button>`).join('')}</div>`;
+        document.querySelectorAll('.quiz-option').forEach(btn=>{btn.onclick=()=>{const o=q.o[parseInt(btn.dataset.idx)];Object.entries(o.s).forEach(([k,v])=>{scores[k]=(scores[k]||0)+v});qi++;showQ();}});
+      }
+      function showResult(){
+        const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+        const top=sorted[0][0];
+        const types={Adventurer:{emoji:'🧗',title:'The Adventurer',desc:'You crave adrenaline! Mountains, trails, and uncharted territory are your happy place.'},Explorer:{emoji:'🧭',title:'The Explorer',desc:'Culture and discovery drive you. You want to understand every place you visit.'},Foodie:{emoji:'🍜',title:'The Foodie',desc:'You travel with your stomach. Every meal is an adventure.'},Luxury:{emoji:'🥂',title:'The Luxury Traveler',desc:'You appreciate the finer things. Rooftop pools and spa days are non-negotiable.'},Nomad:{emoji:'💻',title:'The Digital Nomad',desc:'Work meets wanderlust. You need good WiFi and great coffee.'}};
+        const t=types[top]||types.Explorer;
+        document.getElementById('quizContent').innerHTML=`<div class="quiz-result"><span class="quiz-type">${t.emoji}</span><h3>${t.title}</h3><p>${t.desc}</p><button class="btn btn-primary" onclick="window.closeQuiz()">✈️ Plan My Trip!</button></div>`;
+      }
+      document.getElementById('quizOverlay').style.display='flex';
+      showQ();
+    };
+    window.closeQuiz=function(){document.getElementById('quizOverlay').style.display='none';};
+
+    // ── Memory system ────────────────────────────────────────
+    function loadMemory(){try{return JSON.parse(localStorage.getItem('aiplanner-memory')||'{}')}catch(e){return{}}}
+    function saveMemory(m){localStorage.setItem('aiplanner-memory',JSON.stringify(m))}
+    function recordTrip(result){
+      const m=loadMemory();
+      m.trips=(m.trips||0)+1;
+      m.destinations=[...new Set([...(m.destinations||[]),result.destination])];
+      m.totalDays=(m.totalDays||0)+result.days.length;
+      m.totalBudget=(m.totalBudget||0)+result.budget;
+      if(result.interests){result.interests.forEach(i=>{m.interests=m.interests||{};m.interests[i]=(m.interests[i]||0)+1});}
+      saveMemory(m);
+      updateWelcome();
+    }
+    function updateWelcome(){
+      const m=loadMemory();
+      if(m.trips>0&&document.getElementById('welcomeMsg')){
+        document.getElementById('welcomeMsg').innerHTML=`👋 Welcome back! You've planned <strong>${m.trips}</strong> trips to <strong>${(m.destinations||[]).length}</strong> countries — ${m.totalDays||0} days abroad! <button class="btn btn-sm btn-primary" onclick="window.startPersonalityQuiz()" style="margin-left:8px">🧠 Discover your travel personality</button>`;
+      }
     }
 
     window.optimizeRoute=function(){if(!currentItinerary)return;currentItinerary.days.reverse();renderItinerary(currentItinerary);toast('🗺️ Route optimized!');};
@@ -2289,8 +2485,8 @@
     window.dayDrop=function(e){e.preventDefault();document.querySelectorAll('.itinerary-day-card').forEach(c=>c.classList.remove('drag-over'));const f=parseInt(e.dataTransfer.getData('text/plain')),tc=e.target.closest('.itinerary-day-card');if(!tc||!currentItinerary)return;const t=parseInt(tc.dataset.dayIndex);if(f===t||isNaN(f)||isNaN(t))return;const m=currentItinerary.days.splice(f,1)[0];currentItinerary.days.splice(t,0,m);currentItinerary.days.forEach((d,i)=>d.day=i+1);renderItinerary(currentItinerary);toast('📋 Day reordered!');};
     window.dayDragEnd=function(e){e.target.classList.remove('dragging');};
 
-    window.sendChat=function(){const i=document.getElementById('chatInput'),m=i.value.trim();if(!m)return;addChatMessage(m,'user');i.value='';showTyping();setTimeout(()=>{hideTyping();processChatMessage(m);document.getElementById('regenerateBtn').style.display='';},1500);};
-    window.aiQuickAsk=function(m){addChatMessage(m,'user');showTyping();setTimeout(()=>{hideTyping();processChatMessage(m);document.getElementById('regenerateBtn').style.display='';},1500);};
+    window.sendChat=function(){const i=document.getElementById('chatInput'),m=i.value.trim();if(!m)return;addChatMessage(m,'user');i.value='';showTyping();showSkeleton();setTimeout(()=>{hideTyping();hideSkeleton();processChatMessage(m);document.getElementById('regenerateBtn').style.display='';},2400);};
+    window.aiQuickAsk=function(m){addChatMessage(m,'user');showTyping();showSkeleton();setTimeout(()=>{hideTyping();hideSkeleton();processChatMessage(m);document.getElementById('regenerateBtn').style.display='';},2400);};
 
     function addChatMessage(txt,role){const c=document.getElementById('chatMessages'),d=document.createElement('div');d.className='chat-msg '+role;d.innerHTML=role==='user'?`<div class="chat-avatar" aria-hidden="true">👤</div><div class="chat-bubble">${escapeHTML(txt)}</div>`:`<div class="chat-avatar" aria-hidden="true">🤖</div><div class="chat-bubble"><p>${escapeHTML(txt)}</p></div>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
     function showTyping(){const c=document.getElementById('chatMessages'),d=document.createElement('div');d.className='chat-msg ai';d.id='typingMsg';d.innerHTML='<div class="chat-avatar" aria-hidden="true">🤖</div><div class="chat-bubble"><div class="typing-indicator"><span></span><span></span><span></span></div></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
@@ -2326,6 +2522,8 @@
     applyTheme();
     applyLanguage();
     renderCoaches('all');
+    renderInspoFeed();
+    updateWelcome();
 
     // Handle initial hash navigation
     const hash = window.location.hash.replace('#', '');
@@ -2468,5 +2666,11 @@
 
   })();
   </script>
+  <!-- AI Travel Personality Quiz -->
+  <div class="quiz-overlay" id="quizOverlay" role="dialog" aria-modal="true" aria-label="Travel Personality Quiz" style="display:none">
+    <div class="quiz-modal">
+      <div id="quizContent"></div>
+    </div>
+  </div>
 </body>
 </html>
